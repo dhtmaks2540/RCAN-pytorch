@@ -17,7 +17,7 @@ from dataset import Dataset
 from utils import AverageMeter
 
 cudnn.benchmark = True
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 
 if __name__ == '__main__':
@@ -25,16 +25,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # 입력받을 인자값 등록
     parser.add_argument('--arch', type=str, default='RCAN')
-    parser.add_argument('--images_dir', type=str, required=True)
-    parser.add_argument('--outputs_dir', type=str, required=True)
-    parser.add_argument('--scale', type=int, required=True)
+    parser.add_argument('--images_dir', type=str, default='/home/lch950721/Image/DIV2K_train_HR/')
+    parser.add_argument('--outputs_dir', type=str, default='/home/lch950721/Model/')
+    parser.add_argument('--scale', type=int, default=3)
     parser.add_argument('--num_features', type=int, default=64)
     parser.add_argument('--num_rg', type=int, default=10)
     parser.add_argument('--num_rcab', type=int, default=20)
     parser.add_argument('--reduction', type=int, default=16)
     parser.add_argument('--patch_size', type=int, default=48)
     parser.add_argument('--batch_size', type=int, default=16)
-    parser.add_argument('--num_epochs', type=int, default=20)
+    parser.add_argument('--num_epochs', type=int, default=30)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--threads', type=int, default=8)
     parser.add_argument('--seed', type=int, default=123)
@@ -82,8 +82,7 @@ if __name__ == '__main__':
     for epoch in range(opt.num_epochs):
         # AverageMeter을 통해 loss 초기화
         epoch_losses = AverageMeter()
-        # 전체 데이터셋의 개수에서 전체 데이터셋의 개수 % batch_size만큼을 빼고
-        # _tqdm으로 만들어준다.
+        # 전체 데이터셋의 개수에서 전체 데이터셋의 개수 % batch_size만큼을 빼고 tqdm으로 만들어준다.
         # with as : with 블럭이 시작되는 시점에 뒤를 실행하고 끝나면 as를 실행
         with tqdm(total=(len(dataset) - len(dataset) % opt.batch_size)) as _tqdm:
             # set_description을 통해 프로그레스 바에 대한 묘사 추가
@@ -93,7 +92,7 @@ if __name__ == '__main__':
             # 요구하면 사전에 저장된 batch size 만큼 return
             # dataloader안의 data만큼 for문을 돌며
             for data in dataloader:
-                # inputs과 labels로 데이터 대입
+                # inputs과 labels로 데이터 대입(lr - inputs, hr - labels)
                 inputs, labels = data
                 # inputs과 labels들을 device로 보낸다.
                 inputs = inputs.to(device)

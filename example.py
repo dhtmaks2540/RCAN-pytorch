@@ -11,17 +11,17 @@ from torchvision import transforms
 from model import RCAN
 
 cudnn.benchmark = True
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
 if __name__ == '__main__':
     # 인자값을 받을 수 있는 인스턴스 생성
     parser = argparse.ArgumentParser()
     # 입력받을 인자값 등록
     parser.add_argument('--arch', type=str, default='RCAN')
-    parser.add_argument('--weights_path', type=str, required=True)
-    parser.add_argument('--image_path', type=str, required=True)
-    parser.add_argument('--outputs_dir', type=str, required=True)
-    parser.add_argument('--scale', type=int, required=True)
+    parser.add_argument('--weights_path', type=str, default='/home/lch950721/Model/RCAN_loss_0.017220760196713463.pth')
+    parser.add_argument('--image_path', type=str, default='/home/lch950721/Image/Set14/lenna.bmp')
+    parser.add_argument('--outputs_dir', type=str, default='/home/lch950721/Image/ImageResult')
+    parser.add_argument('--scale', type=int, default=2)
     parser.add_argument('--num_features', type=int, default=64)
     parser.add_argument('--num_rg', type=int, default=10)
     parser.add_argument('--num_rcab', type=int, default=20)

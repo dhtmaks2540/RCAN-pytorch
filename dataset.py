@@ -2,7 +2,6 @@
 import os
 # 운영체제에 등록되어 있는 모든 환경 변수 os 모듈의 environ이라는 속성으로 접근 가능
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 # random 모듈
 import random
 # glob 모듈
@@ -14,6 +13,10 @@ import numpy as np
 # Python Image Library
 import PIL.Image as pil_image
 
+import torch
+
+import cv2
+
 # import tensorflow as tf
 # config = tf.ConfigProto()
 # config.gpu_options.allow_growth = True
@@ -21,9 +24,15 @@ import PIL.Image as pil_image
 
 # Dataset 클래스
 class Dataset(object):
+    # 이미지 보여주기
+    def showImage(self, image):
+        img = cv2.imread(image, cv2.UNCHANGED)
+        cv2.imshow('test', img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
     def __init__(self, images_dir, patch_size, scale, use_fast_loader=False):
         # golb.glob : 사용자가 제시한 조건에 맞는 파일명을 리스트 형식으로 반환
-        # image_dir 폴더 안의 모든 리스트 반환
         # sorted() : 이터러블로부터 새로운 정렬된 리스트를 만듬
         self.image_files = sorted(glob.glob(images_dir + '/*'))
         self.patch_size = patch_size
@@ -36,16 +45,16 @@ class Dataset(object):
         #     hr = tf.read_file(self.image_files[idx])
         #     hr = tf.image.decode_jpeg(hr, channels=3)
         #     hr = pil_image.fromarray(hr.numpy())
-        # pil_image.open을 통해 image_files로부터 인덱스에 맞게 이미지를 가져온다.
+
+        # pil_image.open을 통해 image_files로부터 이미지를 가져온다.
         # convert 메소드를 통해 RGB모드로 변환 
         hr = pil_image.open(self.image_files[idx]).convert('RGB')
-
+        
         # randomly crop patch from training set
-        # randint를 통해 0부터 hr이미지의 width, height에서 
-        # patch_size * scale을 곱한 값을 뺀다.
+        # randint를 통해 random int형 숫자 가져오기
         crop_x = random.randint(0, hr.width - self.patch_size * self.scale)
         crop_y = random.randint(0, hr.height - self.patch_size * self.scale)
-        print('crop_x : ' + crop_x + ', crop_y : ' + crop_y)
+        
         # crop(가로 시작점, 세로 시작점, 가로 범위, 세로 범위)
         hr = hr.crop((crop_x, crop_y, crop_x + self.patch_size * self.scale, crop_y + self.patch_size * self.scale))
 
@@ -58,13 +67,9 @@ class Dataset(object):
         hr = np.array(hr).astype(np.float32)
         lr = np.array(lr).astype(np.float32)
 
-        print('hr : ' + h + ', lr : ' + lr)
-
         # transpose를 통해 다차원의 텐서를 변형(0,1,2 차원을 2,0,1 차원으로)
         hr = np.transpose(hr, axes=[2, 0, 1])
         lr = np.transpose(lr, axes=[2, 0, 1])
-
-        print('hr.transpose : ' + h + ', lr.transpose : ' + lr)
 
         # normalization(min - max 정규화)
         # 이미지데이터의 픽셀 정보는 0 ~ 255 사이의 값을 가진다
@@ -72,8 +77,13 @@ class Dataset(object):
         hr /= 255.0
         lr /= 255.0
 
+        print(hr.shape)
+        print(lr.shape)
+
         return lr, hr
 
     # len 메소드(image_files의 개수 반환)
     def __len__(self):
         return len(self.image_files)
+
+    
