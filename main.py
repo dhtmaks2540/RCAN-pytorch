@@ -35,7 +35,7 @@ if __name__ == '__main__':
     parser.add_argument('--reduction', type=int, default=16)
     parser.add_argument('--patch_size', type=int, default=48)
     parser.add_argument('--batch_size', type=int, default=16)
-    parser.add_argument('--num_epochs', type=int, default=30)
+    parser.add_argument('--num_epochs', type=int, default=40)
     parser.add_argument('--lr', type=float, default=1e-4)
     parser.add_argument('--threads', type=int, default=8)
     parser.add_argument('--seed', type=int, default=123)

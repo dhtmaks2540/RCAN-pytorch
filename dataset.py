@@ -39,12 +39,11 @@ class Dataset(object):
         #     hr = tf.image.decode_jpeg(hr, channels=3)
         #     hr = pil_image.fromarray(hr.numpy())
 
-        # pil_image.open을 통해 image_files로부터 이미지를 가져온다.
+        # pil_image.open을 통해 image_files로부터 이미지 그 자체를 가져온다.
         # convert 메소드를 통해 RGB모드로 변환 
         hr = pil_image.open(self.image_files[idx]).convert('RGB')
         
         # randomly crop patch from training set
-        # randint를 통해 random int형 숫자 가져오기
         crop_x = random.randint(0, hr.width - self.patch_size * self.scale)
         crop_y = random.randint(0, hr.height - self.patch_size * self.scale)
         
