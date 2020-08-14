@@ -84,12 +84,12 @@ class RCAN(nn.Module):
         # super를 통해 RCAN 클래스를 nn.Module 클래스의 속성들로 초기화 
         super(RCAN, self).__init__()
         # 매개변수로 들어온 args를 통해 값들을 넣어준다.
-        scale = args.scale
+        scale = args.scale 
         num_features = args.num_features
         num_rg = args.num_rg
         num_rcab = args.num_rcab
         reduction = args.reduction
-        # 컨볼루션(입력 채널 수, 출력 채널 수, 각 컨볼루션 계층 필터 크기, 패딩)
+        # extract the shallow filter
         self.sf = nn.Conv2d(3, num_features, kernel_size=3, padding=1)
         # num_features와 num_crab, reduction을 가지고
         # RG 인스턴스를 생성한 후 num_rg만큼 생성해 리스트로 지정
@@ -99,7 +99,7 @@ class RCAN(nn.Module):
         # Sequential을 통해 컨볼루션과 PixelShuffle() - upscale 모듈
         self.upscale = nn.Sequential(
             nn.Conv2d(num_features, num_features * (scale ** 2), kernel_size=3, padding=1),
-            # input tensor의 값들을 scale에 맞게 정렬
+            # Rearrange elements -> useful for implementing efficient sub-pixel convolution
             nn.PixelShuffle(scale)
         )
         # 컨볼루션 실행

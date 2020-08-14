@@ -56,7 +56,7 @@ if __name__ == '__main__':
     input = pil_image.open(opt.image_path).convert('RGB')
     # lr을 input을 이용해 resize 해주고 보간법으로 BICUBIC 사용
     lr = input.resize((input.width // opt.scale, input.height // opt.scale), pil_image.BICUBIC)
-    # lr을 원래의 크기로 돌리기
+    # lr resize
     bicubic = lr.resize((input.width, input.height), pil_image.BICUBIC)
     # bicubic된 lr 이미지를 outputs_dir에 저장
     bicubic.save(os.path.join(opt.outputs_dir, '{}_x{}_bicubic.png'.format(filename, opt.scale)))
@@ -69,10 +69,8 @@ if __name__ == '__main__':
     # pred : 255.0을 곱하는데 그 리턴값이 pred에 저장, clamp : 값을 특정범위로 묶는다.
     # squeeze : 1인 차원을 제거, permute : 차원을 교환
     output = pred.mul_(255.0).clamp_(0.0, 255.0).squeeze(0).permute(1, 2, 0).byte().cpu().numpy()
-    print(str(output))
     # fromarray를 통해 배열을 이미지로(모드는 RGB)
     output = pil_image.fromarray(output, mode='RGB')
-    print(str(output))
     # 이미지를 outputs_dir에 저장
     output.save(os.path.join(opt.outputs_dir, '{}_x{}_{}.png'.format(filename, opt.scale, opt.arch)))
 

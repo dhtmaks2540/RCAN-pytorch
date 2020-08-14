@@ -95,7 +95,7 @@ if __name__ == '__main__':
             for data in dataloader:
                 # inputs과 labels로 데이터 대입(lr - inputs, hr - labels)
                 inputs, labels = data
-                # inputs과 labels들을 device로 보낸다.
+
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 # inputs을 가지고 RCAN 모델에 넣은 후 preds 변수에 대입
