@@ -16,10 +16,11 @@ from dataset import Dataset
 # utils로부터 AverageMeter 클래스 가져오기
 from utils import AverageMeter
 
+# cuda benchmark mode true
 cudnn.benchmark = True
 device = torch.device("cuda:1" if torch.cuda.is_available() else "cpu")
 
-
+# 인터프리터로 직접 실행했을 경우 아래 코드 실행
 if __name__ == '__main__':
     # 인자값을 받을 수 있는 인스턴스 생성
     parser = argparse.ArgumentParser()
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     parser.add_argument('--arch', type=str, default='RCAN')
     parser.add_argument('--images_dir', type=str, default='/home/lch950721/Image/DIV2K_train_HR/')
     parser.add_argument('--outputs_dir', type=str, default='/home/lch950721/Model/')
-    parser.add_argument('--scale', type=int, default=3)
+    parser.add_argument('--scale', type=int, default=2)
     parser.add_argument('--num_features', type=int, default=64)
     parser.add_argument('--num_rg', type=int, default=10)
     parser.add_argument('--num_rcab', type=int, default=20)
@@ -53,7 +54,7 @@ if __name__ == '__main__':
     # model(RCAN)에 opt를 넣어주고 device로 보낸다.
     model = RCAN(opt).to(device)
 
-    # 각 원소별 차이의 절대값을 계산
+    # L1Loss : 각 원소별 차이의 절대값을 계산
     criterion = nn.L1Loss()
 
     # 최적화 함수로 optim.adam사용

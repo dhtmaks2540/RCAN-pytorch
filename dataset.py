@@ -24,13 +24,6 @@ import cv2
 
 # Dataset 클래스
 class Dataset(object):
-    # 이미지 보여주기
-    def showImage(self, image):
-        img = cv2.imread(image, cv2.UNCHANGED)
-        cv2.imshow('test', img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
     def __init__(self, images_dir, patch_size, scale, use_fast_loader=False):
         # golb.glob : 사용자가 제시한 조건에 맞는 파일명을 리스트 형식으로 반환
         # sorted() : 이터러블로부터 새로운 정렬된 리스트를 만듬
@@ -76,9 +69,6 @@ class Dataset(object):
         # 이미지 픽셀 정보를 255로 나누어 0 ~ 1.0 사이의 값을 가지도록
         hr /= 255.0
         lr /= 255.0
-
-        print(hr.shape)
-        print(lr.shape)
 
         return lr, hr
 
