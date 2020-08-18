@@ -7,13 +7,13 @@ from torch import nn
 import torch.optim as optim
 import torch.backends.cudnn as cudnn
 from torch.utils.data.dataloader import DataLoader
-# for문의 상태바를 알려준다.
+# for문 프로그레스바
 from tqdm import tqdm
-# 모델로부터 RCAN 클래스 가져오기
+# 모델파일로부터 RCAN 클래스 가져오기
 from model import RCAN
-# dataset으로부터 Dataset 클래스 가져오기
+# dataset파일으로부터 Dataset 클래스 가져오기
 from dataset import Dataset
-# utils로부터 AverageMeter 클래스 가져오기
+# utils파일로부터 AverageMeter 클래스 가져오기
 from utils import AverageMeter
 
 # cuda benchmark mode true
@@ -71,10 +71,9 @@ if __name__ == '__main__':
                             # num_workers로 opt에 저장된 threads 사용
                             # data 로딩을 위해 몇 개의 서브 프로세스를 사용할 것인지
                             num_workers=opt.threads,
-                            # 고정된 영역의 데이터 복사본을 얻을 수 있다.
+                            # Tensor를 CUDA 고정 메모리에 올린다. -> 속도증가
                             pin_memory=True,
-                            # 제일 마지막 batch가 batch 수 보다 작을 경우 그냥
-                            # 그 배치를 버리는 것
+                            # 제일 마지막 batch가 batch 수 보다 작을 경우 마지막 배치를 버리는 것
                             drop_last=True)
 
     min = sys.maxsize

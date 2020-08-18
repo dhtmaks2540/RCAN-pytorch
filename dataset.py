@@ -14,8 +14,7 @@ import numpy as np
 import PIL.Image as pil_image
 
 import torch
-
-import cv2
+import matplotlib.pyplot as plt
 
 # import tensorflow as tf
 # config = tf.ConfigProto()
@@ -54,8 +53,7 @@ class Dataset(object):
         # patch_size, patch_size로 크기 조정하고 BICUBIC 보간법사용
         lr = hr.resize((self.patch_size, self.patch_size), resample=pil_image.BICUBIC)
 
-        # hr과 lr의 이미지를 배열로 바꾸고 
-        # astype을 통해 type을 데이터 타입을 변경(float32로)
+        # hr과 lr의 이미지를 numpy 배열로 바꾸고 astype을 통해 type을 데이터 타입을 변경(float32로)
         hr = np.array(hr).astype(np.float32)
         lr = np.array(lr).astype(np.float32)
 
@@ -63,8 +61,7 @@ class Dataset(object):
         hr = np.transpose(hr, axes=[2, 0, 1])
         lr = np.transpose(lr, axes=[2, 0, 1])
 
-        # normalization(min - max 정규화)
-        # 이미지 픽셀 정보(0 ~ 255)를 255로 나누어 0 ~ 1.0 사이의 값을 가지도록
+        # 이미지 픽셀 정보(0 ~ 255)를 255로 나누어 0 ~ 1.0 사이의 값을 가지도록 normalization
         hr /= 255.0
         lr /= 255.0
 

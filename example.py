@@ -56,12 +56,13 @@ if __name__ == '__main__':
     input = pil_image.open(opt.image_path).convert('RGB')
     # lr을 input을 이용해 resize 해주고 보간법으로 BICUBIC 사용
     lr = input.resize((input.width // opt.scale, input.height // opt.scale), pil_image.BICUBIC)
-    # lr resize
+    # lr resize -> bicubic
     bicubic = lr.resize((input.width, input.height), pil_image.BICUBIC)
     # bicubic된 lr 이미지를 outputs_dir에 저장
     bicubic.save(os.path.join(opt.outputs_dir, '{}_x{}_bicubic.png'.format(filename, opt.scale)))
     # Tensor 형태로 만들고 0 위치에 1인 차원 추가 후 device로 보냄
     input = transforms.ToTensor()(lr).unsqueeze(0).to(device)
+    
     # model에 input을 넣는데 no_grad를 통해 해당 블록을 기록 x 
     with torch.no_grad():
         pred = model(input)
